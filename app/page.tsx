@@ -1,26 +1,39 @@
 "use client";
 import { useState } from 'react';
 
+// TypeScript interface to define the shape of our data
+interface Question {
+  id: number;
+  text: string;
+  category: string;
+  answers: string[];
+}
+
 export default function Home() {
-  const [questions, setQuestions] = useState([
+  const [questions, setQuestions] = useState<Question[]>([
     { id: 1, text: "How to defeat Architect boss?", category: "Gaming", answers: ["Use the fire sword!"] },
     { id: 2, text: "Best way to maintain a low fade?", category: "Grooming", answers: [] }
   ]);
-  const [newQuestion, setNewQuestion] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [replyText, setReplyText] = useState({});
+  const [newQuestion, setNewQuestion] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [replyText, setReplyText] = useState<Record<number, string>>({});
 
   const categories = ["All", "Gaming", "Grooming", "Apparel Design", "General"];
 
   const handlePost = () => {
     if (newQuestion.trim()) {
       const categoryToPost = selectedCategory === "All" ? "General" : selectedCategory;
-      setQuestions([...questions, { id: Date.now(), text: newQuestion, category: categoryToPost, answers: [] }]);
+      setQuestions([...questions, { 
+        id: Date.now(), 
+        text: newQuestion, 
+        category: categoryToPost, 
+        answers: [] 
+      }]);
       setNewQuestion("");
     }
   };
 
-  const handlePostAnswer = (qId) => {
+  const handlePostAnswer = (qId: number) => {
     if (replyText[qId]?.trim()) {
       setQuestions(questions.map(q => 
         q.id === qId ? { ...q, answers: [...q.answers, replyText[qId]] } : q
